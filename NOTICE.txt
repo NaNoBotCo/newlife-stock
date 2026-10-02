@@ -1,0 +1,17 @@
+Newlife Impex Stock: what is in this repository, and under what terms.
+
+PAGE TEXT AND CODE: docs/index.html (apart from the seller's material below), README.txt
+    Page text: CC BY 4.0, see LICENSE. Credit line: "Nan · hongdam.net · CC BY 4.0",
+    with a link to https://nanobotco.github.io/newlife-stock/ .
+    Code: MIT, see LICENSE-CODE.
+
+THE SELLER'S MATERIAL: product names, prices, units, packs, specifications, descriptions and
+photo links, in docs/index.html and docs/newlife-stock.csv
+    Read from www.newlifeimpex.com, the IndiaMART site of Newlife Pharmacy, Nagpur, India.
+    They belong to the seller; neither licence above covers them. Photos load from the
+    seller's IndiaMART image host and are not stored here.
+
+INGREDIENT AND FORM TAGS: read from each listing's name and composition fields by the
+build; CC BY 4.0 as the page text.
+
+EXCHANGE RATES: ECB reference rates via frankfurter.dev, as dated on the page.
