@@ -443,12 +443,18 @@ function facetCounts(skip, key) {
 }
 let ingFind = "";
 const openFacets = { cat: true, ing: true, form: true, price: true };
+let sheetOpen = {};
+const facetActive = { cat: () => S.g || S.c, ing: () => S.ing, form: () => S.forms.length, price: () => S.min != null || S.max != null };
+let inSheet = false;
 function facet(key, title, ...body) {
-  const d = el("details", { class: "facet", open: openFacets[key] }, el("summary", { text: title }), ...body);
-  d.addEventListener("toggle", () => { openFacets[key] = d.open; });
+  const store = inSheet ? sheetOpen : openFacets;
+  const open = inSheet ? (sheetOpen[key] ?? !!facetActive[key]()) : openFacets[key];
+  const d = el("details", { class: "facet", open }, el("summary", { text: title }), ...body);
+  d.addEventListener("toggle", () => { store[key] = d.open; });
   return d;
 }
-function buildFacets() {
+function buildFacets(sheet = false) {
+  inSheet = sheet;
   const t = L();
   const root = el("div");
   root.append(el("div", { class: "fhead" }, el("h2", { text: t.filters }),
@@ -599,8 +605,8 @@ function update(opts = {}) {
   sortSel.querySelector('option[value="best"]').disabled = !Q.terms.length;
   sortSel.value = effectiveSort();
   renderList(true);
-  const facets = buildFacets();
-  if ($("sheet").open) $("sheetBody").replaceChildren(facets); else $("facets").replaceChildren(facets);
+  if ($("sheet").open) $("sheetBody").replaceChildren(buildFacets(true)); else $("facets").replaceChildren(buildFacets());
+  $("sheetClear").hidden = !activeCount();
   $("openf").textContent = t.filters + (activeCount() ? ` (${activeCount()})` : "");
   $("sheetDone").textContent = t.show(current.length);
   $("qclear").hidden = !S.q;
@@ -718,12 +724,13 @@ function init() {
   if ("IntersectionObserver" in window)
     new IntersectionObserver(es => { if (es.some(x => x.isIntersecting) && !$("more").hidden) { shown += PAGE; renderList(false); } }, { rootMargin: "800px" }).observe($("more"));
   const sheet = $("sheet");
-  $("openf").addEventListener("click", () => { $("sheetBody").replaceChildren(buildFacets()); sheet.showModal(); });
+  $("openf").addEventListener("click", () => { sheetOpen = {}; $("sheetBody").replaceChildren(buildFacets(true)); $("sheetClear").hidden = !activeCount(); sheet.showModal(); });
   $("sheetDone").addEventListener("click", () => sheet.close());
   $("sheetClear").addEventListener("click", clearAll);
   sheet.addEventListener("close", () => { $("facets").replaceChildren(buildFacets()); });
 }
 init();
+window.addEventListener("hashchange", () => { readHash(); $("q").value = S.q; chrome(); update(); });
 </script>
 </body>
 </html>
